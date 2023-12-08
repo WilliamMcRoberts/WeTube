@@ -1,0 +1,8 @@
+appsettings.json
+appsettings.Development.json
+app.db
+app.db-shm
+app.db-wal
+bin/
+obj/
+node_modules/

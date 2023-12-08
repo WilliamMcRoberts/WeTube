@@ -1,0 +1,14 @@
+﻿
+<page-script src="@Src"></page-script>
+
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public string Src { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine($"SRC: {Src}");
+    }
+}
