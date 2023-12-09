@@ -9,9 +9,12 @@ public class VideoFileProcessor(IConfiguration config) : IVideoFileProcessor
     public async Task<Result<bool>> UploadFile(IBrowserFile file, string userId)
     {
         var randFileName = Path.GetRandomFileName();
-        string newFileName = Path.ChangeExtension(
+        string newfile = Path.ChangeExtension(
             randFileName,
             Path.GetExtension(file.Name));
+
+        string newFileName = $"{Path.GetFileNameWithoutExtension(file.Name)}|{newfile}";
+
 
         string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(newFileName);
 
