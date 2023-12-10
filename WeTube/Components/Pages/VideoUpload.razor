@@ -9,7 +9,7 @@
 
 <h3>VideoUpload Page</h3>
 
-<EditForm Model="@InputFileModel" OnSubmit="@ProcessFile">
+<EditForm Model="@InputFileModel" OnSubmit="@ProcessFile" FormName="upolad-form">
     <InputFile OnChange="@LoadFile" />
     <button type="submit" class="rounded border border-green-800 text-green-800
         bg-green-300 w-40 h-8 hover:bg-green-800 hover:text-white">
