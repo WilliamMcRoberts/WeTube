@@ -7,6 +7,10 @@
 @using static LanguageExt.Prelude
 @using WeTube.Components.Shared
 @attribute [StreamRendering]
+@using WeTube.Repositories
+@inject IApplicationUserRepository _users
+@using LanguageExt
+@using static LanguageExt.Prelude
 <PageTitle>Home</PageTitle>
 
 <BlazorPageScript Src="./Components/Pages/Home.razor.js"></BlazorPageScript>

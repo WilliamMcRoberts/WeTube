@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WeTube.Data;
 
@@ -10,9 +11,11 @@ using WeTube.Data;
 namespace WeTube.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231211165306_AddVideoUsers")]
+    partial class AddVideoUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
@@ -220,6 +223,7 @@ namespace WeTube.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Files")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
