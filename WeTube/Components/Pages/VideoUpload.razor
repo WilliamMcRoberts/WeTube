@@ -4,13 +4,22 @@
 @inject IConfiguration config
 @using WeTube.Processors
 @using WeTube.Models
+@using WeTube.Repositories
 @inject IVideoFileProcessor videoFileProcessor
 @using LanguageExt.Common
+@inject IVideoRepository _videos
+@using WeTube.Data
+@inject ApplicationDbContext _db
 
 <h3>VideoUpload Page</h3>
 
 <EditForm Model="@InputFileModel" OnSubmit="@ProcessFile" FormName="upolad-form">
     <InputFile OnChange="@LoadFile" />
+    <label class="font-bold text-green-800 text-2xl" for="VideoName">
+        Video Name
+        <InputText @bind-Value="@InputFileModel.VideoName" @onchange=@(e => InputFileModel.VideoName =
+            e.Value.ToString()) />
+    </label>
     <button type="submit" class="rounded border border-green-800 text-green-800
         bg-green-300 w-40 h-8 hover:bg-green-800 hover:text-white">
         Upload
@@ -42,12 +51,16 @@
             return;
         }
 
+        string vidPath = string.Empty;
         var result = await videoFileProcessor.UploadFile(InputFileModel.File, userId);
 
-        result.Match(
-        _ =>
+        var good = result.Match<bool>(
+        path =>
         {
-            InputFileModel = new();
+            if (!string.IsNullOrEmpty(path))
+            {
+                InputFileModel.VideoPath = path;
+            }
             return true;
         },
         error =>
@@ -56,7 +69,23 @@
             return false;
         }
         );
+
+        Result<int> vidId = 0;
+        if (good)
+            vidId = await _videos.AddVideo(userId, InputFileModel.VideoName, InputFileModel.VideoPath);
+
+        var r = vidId.Match<int>(
+        id => id,
+        error =>
+        {
+            errors.Add(error.Message);
+            return 0;
+        }
+        );
+
+        InputFileModel = new();
     }
+
 
     private void LoadFile(InputFileChangeEventArgs e)
     {

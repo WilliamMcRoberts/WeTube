@@ -1,4 +1,4 @@
-﻿namespace WeTube;
+﻿namespace WeTube.Models;
 
 public class VideoUser
 {

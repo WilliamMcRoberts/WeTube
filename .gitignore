@@ -6,3 +6,4 @@ app.db-wal
 bin/
 obj/
 node_modules/
+uploads/

@@ -14,6 +14,7 @@ using WeTube.Repositories;
 using WeTube.DataAccess;
 using Microsoft.AspNetCore.StaticFiles;
 using WeTube;
+using Microsoft.Extensions.FileProviders;
 
 
 
@@ -38,6 +39,8 @@ builder.Services.AddSingleton<IRender, Render>();
 builder.Services.AddTransient<IApplicationUserRepository, ApplicationUserRepository>();
 builder.Services.AddSingleton<ISqlConnection, SqlConnection>();
 builder.Services.AddScoped<IVideoFileProcessor, VideoFileProcessor>();
+builder.Services.AddScoped<IVideoRepository, VideoRepository>();
+builder.Services.AddScoped<IVideoUsersRepository, VideoUsersRepository>();
 
 // Default
 builder.Services.AddRazorComponents()
@@ -86,7 +89,7 @@ else
     app.UseHsts();
 }
 
-app.UseWhen(context => context.Request.Path.StartsWithSegments("/"), appBuilder =>
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/uploads"), appBuilder =>
 {
     appBuilder.UseCors("CorsPolicy");
 
@@ -95,12 +98,12 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/"), appBuilder 
     provider.Mappings[".m3u8"] = "application/x-mpegURL";
     provider.Mappings[".ts"] = "video/MP2T";
 
-    //appBuilder.UseStaticFiles(new StaticFileOptions
-    //{
-    //    ContentTypeProvider = provider,
-    //    FileProvider = new PhysicalFileProvider("C:\\VideoStorage"),
-    //    RequestPath = "/VideoStorage"
-    //});
+    appBuilder.UseStaticFiles(new StaticFileOptions
+    {
+        ContentTypeProvider = provider,
+        FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.WebRootPath, "uploads")),
+        RequestPath = "/uploads"
+    });
 });
 
 app.UseCors("CorsPolicy");

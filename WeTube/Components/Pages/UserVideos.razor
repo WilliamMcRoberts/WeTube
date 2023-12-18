@@ -1,7 +1,57 @@
 ﻿@page "/user-videos"
+@inject IVideoRepository _videos
+@using WeTube.Repositories
+@using WeTube.Models
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using WeTube.Components.Shared
+@inject NavigationManager _nav
+@inject IConfiguration _config
 
 <h3>UserVideos</h3>
 
+<BlazorPageScript Src="./Components/Pages/UserVideos.razor.js?uservideos"> </BlazorPageScript>
+
+<div hx-on:click="alert('hello')" class="process-videos">Click me</div>
+
+<br />
+-----------------------------------------------------------------------------
+<br />
+
+@foreach (var video in videos)
+{
+    <video id="my-video" class="video-js" controls preload="auto">
+    <source src=@(video.VideoPath.Substring(8)) type="application/x-mpegURL">
+    <p class=" vjs-no-js">
+        To view this video please enable JavaScript, and consider upgrading to a
+        web browser that
+        <a href="https://videojs.com/html5-video-support/" target="_blank">
+            supports HTML5 video
+        </a>
+    </p>
+</video>
+}
+
 @code {
+
+    IEnumerable<VideoModel> videos;
+
+    string storagePath = string.Empty;
+    string userId = string.Empty;
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider
+        .GetAuthenticationStateAsync();
+        var user = authState.User;
+        userId = user.Claims.FirstOrDefault(c => c.Type.Contains("nameidentifier"))?.Value!;
+        var res = await _videos.GetVideosFromVideoUserId(userId);
+
+        videos = res.Match<IEnumerable<VideoModel>>(
+        videos => videos,
+        error =>
+        {
+            Console.WriteLine(error.Message);
+            return Enumerable.Empty<VideoModel>();
+        });
+    }
 
 }

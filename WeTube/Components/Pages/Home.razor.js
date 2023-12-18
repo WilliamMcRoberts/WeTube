@@ -1,7 +1,6 @@
-﻿//import {observeSlideRight, animateSlideRight } from '/js/hooks.js';
-
+﻿
 export function onLoad() {
-    console.log("Loaded / Home...");
+    console.log("Loaded / Homesssss.after..");
     animateSlideRight();
     observeSlideRight();
     let el = document.getElementById('scroll');
@@ -10,7 +9,7 @@ export function onLoad() {
         el.style.transform = `translateY(${window.scrollY * 1.15}px)`;
     }
 
-    processAllHtmxElements();
+    processAllHtmxElements(".process-home");
 }
 
 export function onUpdate() {
@@ -19,11 +18,4 @@ export function onUpdate() {
 
 export function onDispose() {
     console.log("Disposed / Home...");
-}
-
-
-function processAllHtmxElements() {
-    document.querySelectorAll('.process-home').forEach(el => {
-        htmx.process(el);
-    });
 }

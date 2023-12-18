@@ -6,7 +6,7 @@ namespace WeTube.Processors;
 
 public class VideoFileProcessor(IConfiguration config) : IVideoFileProcessor
 {
-    public async Task<Result<bool>> UploadFile(IBrowserFile file, string userId)
+    public async Task<Result<string>> UploadFile(IBrowserFile file, string userId)
     {
         var randFileName = Path.GetRandomFileName();
         string newfile = Path.ChangeExtension(
@@ -14,7 +14,6 @@ public class VideoFileProcessor(IConfiguration config) : IVideoFileProcessor
             Path.GetExtension(file.Name));
 
         string newFileName = $"{Path.GetFileNameWithoutExtension(file.Name)}|{newfile}";
-
 
         string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(newFileName);
 
@@ -33,9 +32,15 @@ public class VideoFileProcessor(IConfiguration config) : IVideoFileProcessor
         await using FileStream fs = new(path, FileMode.Create);
         await file.OpenReadStream(4000000000).CopyToAsync(fs);
 
-        return ConvertToHls(
+        var outputPath = Path.Combine(storagePath, userId, "hls", fileNameWithoutExtension, fileNameWithoutExtension);
+
+        var result = ConvertToHls(
             Path.Combine(storagePath, userId, newFileName),
             Path.Combine(storagePath, userId, "hls", fileNameWithoutExtension, fileNameWithoutExtension));
+
+        return result.Match<Result<string>>(
+            ok => new($"{outputPath}.m3u8"),
+            err => new(err));
     }
 
     public Result<bool> ConvertToHls(string inputPath, string outputPath)
@@ -47,15 +52,16 @@ public class VideoFileProcessor(IConfiguration config) : IVideoFileProcessor
         {
             var task = Task.Run(() =>
             {
-                using Process? process = Process.Start(new ProcessStartInfo
-                {
-                    FileName = "ffmpeg",
-                    Arguments = arguments,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                });
+                using Process? process = Process.Start(
+                    new ProcessStartInfo
+                    {
+                        FileName = "ffmpeg",
+                        Arguments = arguments,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                    });
             });
 
             task.Wait();

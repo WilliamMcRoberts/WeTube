@@ -7,7 +7,7 @@ using static LanguageExt.Prelude;
 
 namespace WeTube.Repositories;
 
-public class ApplicationUserRepository(ISqlConnection db, IConfiguration configuration, ApplicationDbContext adb) : IApplicationUserRepository
+public class ApplicationUserRepository(ISqlConnection db, IConfiguration configuration) : IApplicationUserRepository
 {
     private readonly ISqlConnection _db = db;
     private readonly IConfiguration _config = configuration;
@@ -43,9 +43,3 @@ public class ApplicationUserRepository(ISqlConnection db, IConfiguration configu
     }
 }
 
-public interface IApplicationUserRepository
-{
-    ValueTask<Result<IEnumerable<ApplicationUser>>> GetApplicationUsers();
-    ValueTask<Option<ApplicationUser>> GetApplicationUser(string id);
-
-}

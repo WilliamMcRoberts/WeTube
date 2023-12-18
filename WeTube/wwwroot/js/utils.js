@@ -1,10 +1,8 @@
-
-
-//window.onload = () => {
-//    console.log("window.onload() from hooks.js")
-//    animateSlideRight()
-//}
-
+window.processAllHtmxElements = (selector) => {
+    document.querySelectorAll(selector).forEach(el => {
+        htmx.process(el);
+    });
+}
 
 window.observeSlideRight = () => {
     const els = document.querySelectorAll(".observe-slide-right");

@@ -15,18 +15,37 @@ public class SqlConnection(IConfiguration configuration) : ISqlConnection
         using IDbConnection connection = new Microsoft.Data.Sqlite.SqliteConnection(
                        _configuration.GetConnectionString(connectionId));
 
-        var results = await connection.QueryAsync<T>(sqlQuery, parameters);
+        IEnumerable<T> results = null;
+
+        try
+        {
+            results = await connection.QueryAsync<T>(sqlQuery, parameters);
+        }
+        catch (Exception ex)
+        {
+            return new(ex);
+        }
+
         return results is null ?
             new(new Exception("No data was returned."))
             : new(results);
     }
 
-    public async Task SaveData<T>(
+    public async Task<Result<int>> SaveData<T>(
         string sqlQuery, T parameters, string connectionId = "DefaultConnection")
     {
-        using IDbConnection connection = new Microsoft.Data.Sqlite.SqliteConnection(
-                                  _configuration.GetConnectionString(connectionId));
+        using IDbConnection connection =
+            new Microsoft.Data.Sqlite.SqliteConnection(
+                _configuration.GetConnectionString(connectionId));
 
-        await connection.ExecuteAsync(sqlQuery, parameters);
+        try
+        {
+            var rows = await connection.ExecuteAsync(sqlQuery, parameters);
+            return new(rows);
+        }
+        catch (Exception ex)
+        {
+            return new(ex);
+        }
     }
 }

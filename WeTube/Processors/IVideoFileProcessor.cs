@@ -6,6 +6,6 @@ namespace WeTube.Processors
     public interface IVideoFileProcessor
     {
         Result<bool> ConvertToHls(string inputPath, string outputPath);
-        Task<Result<bool>> UploadFile(IBrowserFile file, string userId);
+        Task<Result<string>> UploadFile(IBrowserFile file, string userId);
     }
 }
