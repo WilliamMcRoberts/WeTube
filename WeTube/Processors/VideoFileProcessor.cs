@@ -50,19 +50,20 @@ public class VideoFileProcessor(IConfiguration config) : IVideoFileProcessor
 
         try
         {
-            var task = Task.Run(() =>
-            {
-                using Process? process = Process.Start(
-                    new ProcessStartInfo
-                    {
-                        FileName = "ffmpeg",
-                        Arguments = arguments,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true,
-                    });
-            });
+            Parallel.Invoke(
+                () =>
+                {
+                    using Process? process = Process.Start(
+                        new ProcessStartInfo
+                        {
+                            FileName = "ffmpeg",
+                            Arguments = arguments,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                        });
+                });
 
             return new(true);
         }
