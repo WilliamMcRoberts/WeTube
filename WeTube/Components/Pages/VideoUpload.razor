@@ -11,31 +11,33 @@
 @using WeTube.Data
 @inject ApplicationDbContext _db
 
-<h3>VideoUpload Page</h3>
 
-<EditForm Model="@InputFileModel" OnSubmit="@ProcessFile" FormName="upolad-form">
-    <InputFile OnChange="@LoadFile" />
-    <label class="font-bold text-green-800 text-2xl" for="VideoName">
-        Video Name
-        <InputText @bind-Value="@InputFileModel.VideoName" @onchange=@(e => InputFileModel.VideoName =
-            e.Value.ToString()) />
-    </label>
-    <button type="submit" class="rounded border border-green-800 text-green-800
+    <h3>VideoUpload Page</h3>
+
+    <EditForm Model="@InputFileModel" OnSubmit="@ProcessFile" FormName="upolad-form">
+        <InputFile OnChange="@LoadFile" />
+        <label class="font-bold text-green-800 text-2xl" for="VideoName">
+            Video Name
+            <InputText @bind-Value="@InputFileModel.VideoName" @onchange=@(e => InputFileModel.VideoName =
+                e.Value.ToString()) />
+        </label>
+        <button type="submit" class="rounded border border-green-800 text-green-800
         bg-green-300 w-40 h-8 hover:bg-green-800 hover:text-white">
-        Upload
-    </button>
-</EditForm>
+            Upload
+        </button>
+    </EditForm>
 
-@if (errors.Count > 0)
-{
-    <h2>Errors</h2>
-    <ul class="p-2">
-    @foreach (var error in errors)
-        {
-            <li class="text-red-500">@error</li>
-        }
-    </ul>
-}
+    @if (errors.Count > 0)
+    {
+        <h2>Errors</h2>
+        <ul class="p-2">
+        @foreach (var error in errors)
+            {
+                <li class="text-red-500">@error</li>
+            }
+        </ul>
+    }
+
 
 @code {
     public InputFileModel InputFileModel { get; set; } = new();
@@ -52,6 +54,7 @@
         }
 
         string vidPath = string.Empty;
+
         var result = await videoFileProcessor.UploadFile(InputFileModel.File, userId);
 
         var good = result.Match<bool>(

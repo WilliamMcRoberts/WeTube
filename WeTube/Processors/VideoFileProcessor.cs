@@ -64,8 +64,7 @@ public class VideoFileProcessor(IConfiguration config) : IVideoFileProcessor
                     });
             });
 
-            task.Wait();
-            return new(task.IsCompletedSuccessfully);
+            return new(true);
         }
         catch (Exception ex)
         {
